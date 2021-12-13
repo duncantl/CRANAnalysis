@@ -21,8 +21,34 @@ files for S4 classes.
 Writing examples in Roxygen is problematic as there is no syntax highlighting as these are comments.
 (Is there a different editing mode within @example sections?)
 
-## 
 
+What we find in the analysis below is that, ceteris paribus,  Roxygen leads
++ to slightly shorter documentation of the 
+   + value, 
+   + description and 
+   + arguments
+ elements of the resulting Rd files
++ to fewer examples
+
+These seems to confirm our conjectures.
+Howevre, more positive (but improbable) interpretations are that
++ those who use Roxygen are more succinct
++ the packages documented in Roxygen require less documentation
++ overall, the quantity of examples is about the same, even if the number of pages that have
+  examples  is significantly smaller.
+
+Basically, Roxygen is convenient for the author, but not necessarily better for the user/reader.
+
+
+
+## Source'ing the Functions
+```r
+invisible(lapply(c('cranPkgs.R', 'Rd.R', 'rcpp.R', 'funs.R', 'examples.R'), source))
+```
+
+## Getting the Package Names and Directories in the CRAN mirror
+
+We get the package names and paths to the them:
 ```r
 pkgs = getCRANPkgNames()
 ```
@@ -495,17 +521,17 @@ table(sapply(vfiles, length))
 plot(density(sapply(vfiles, length)))
 ```
 
-So of those packages that have a vignette, 50% have 1.
+So of those packages that have a vignette, 50% have exactly 1.
 
 
 
-Let's look at the extensions:
+Let's look at the extensions in the vignettes directories:
 ```r
 ext = unlist(lapply(vfiles, file_ext))
 dsort(table(ext))
 ```
 
-
+Now we'll list all the files and their extension and package.
 ```r
 tmp = lapply(file.path(pkgs, "vignettes"),  list.files, all = TRUE, full = TRUE, no.. = TRUE)
 fi = data.frame(ext = file_ext(unlist(tmp)),
