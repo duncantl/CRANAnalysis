@@ -1,5 +1,9 @@
 # Partial Analysis of CRAN Packages
 
+
+We are working from a local copy of CRAN.  See below for how to fetch this and expand
+the packages.
+
 ### Help Files
 
 How do Roxygen-generated help files compare to those that are manually generated.
@@ -552,4 +556,24 @@ ty = by(fi, fi$ext, function(x) system(sprintf("file %s", x$file[1]), intern = T
 ```r
 tmp = tapply(fi$file, fi$ext, `[`, 1)
 types = dqmagic::file_type(tmp)
+```
+
+
+
+
+
+## Updating/Fetching CRAN
+
+From this CRAN2/ directory
+```
+rsync -rtlzv --include='*.tar.gz' --exclude='Recommended' --exclude="Archive" --exclude="Symlink" --exclude="Old" --exclude="Orphaned" cran.r-project.org::CRAN/src/contrib . > newFiles
+```
+Files will be added to the ./contrib/ under the current directory, CRAN2/
+
+
+Then we extract the archives with
+```
+mkdir Pkgs3
+cd Pkgs3
+for f in ../contrib/*.tar.gz ; do echo $f; tar zxf $f ; done
 ```
