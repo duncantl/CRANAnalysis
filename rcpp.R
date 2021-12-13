@@ -7,9 +7,12 @@ function(pkg, desc = readDescription(pkg), all = TRUE)
 }
 
 readDescription =
-function(pkg)
+function(pkg, split = TRUE)
 {
     d = tools:::.read_description(file.path(pkg, "DESCRIPTION"))
-    tools:::.split_description(d)
+    if(split)
+        tools:::.split_description(d)
+    else
+        d
 }
 
