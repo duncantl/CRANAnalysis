@@ -1,7 +1,7 @@
 # Partial Analysis of CRAN Packages
 
 
-We are working from a local copy of CRAN.  See below for how to fetch this and expand
+We are working from a local copy of CRAN.  See [below](#updatingfetching-cran) for how to fetch this and expand
 the packages.
 
 ### Help Files
@@ -47,7 +47,7 @@ Basically, Roxygen is convenient for the author, but not necessarily better for 
 
 ## Source'ing the Functions
 ```r
-invisible(lapply(c('cranPkgs.R', 'Rd.R', 'rcpp.R', 'funs.R', 'examples.R'), source))
+invisible(lapply(c('cranPkgs.R', 'Rd.R', 'rcpp.R', 'funs.R', 'examples.R', 'aliases.R'), source))
 ```
 
 ## Getting the Package Names and Directories in the CRAN mirror
@@ -327,6 +327,42 @@ title(c("Size (num. characters) of Package Examples", "Roxygen versus Manual Con
 ```
 -->
 
+# Number of Aliases in Each Rd File
+
+```r
+q = by(rdinfo2$numAliases, rdinfo2$roxygen, quantile, seq(0, .99, length = 200))
+mx = max(q[[1]], q[[2]])
+qqplot(q[[1]], q[[2]], xlim = c(0, mx), ylim = c(0, mx), xlab = 'Manual Rd Files', ylab = 'Roxygen Rd files')
+abline(a = 0, b = 1, col = "red", lty = 3)
+```
+
+So there are generally more aliases in non-Roxygen files.  
+Is this a good or bad thing?
+Adding more aliases to a Rd file is often used to avoid providing
+separate, more specific Rd files for topics that should be documented
+separately.
+However, combining documentation for topics that are truly similar
+is a good thing.
+So there is a trade-off and it depends on the topics. There isn't a general rule.
+
+Note that the maximum number of aliases is in the RGtk2 package in man/gdkKeySyms.Rd.
+This is not an Roxygen-generated file. However, it is machine generated.
+
+
+The aliases can be for different functions and also for different methods of the same function.
+
+
+```r
+aliases = lapply(rds2, function(f)  tools:::.Rd_get_metadata(parse_Rd(f), "alias"))
+```
+```r
+aliases2 = lapply(aliases, parseAliases)
+```
+
+
+
+
+
 ## How Many Package have Native Code
 
 Deal with subdirectories of src/.
@@ -577,3 +613,7 @@ mkdir Pkgs3
 cd Pkgs3
 for f in ../contrib/*.tar.gz ; do echo $f; tar zxf $f ; done
 ```
+
+
+
+# How Many Packages Use Other Packages?
